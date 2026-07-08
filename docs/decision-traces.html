@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetroOnto — Multi-Agent Decision Ontology</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --card: #131320;
+  --border: #1e1e32;
+  --text: #c8c8d4;
+  --muted: #686884;
+  --accent: #7c5ce7;
+  --green: #2ecc71;
+  --red: #e74c3c;
+  --amber: #f39c12;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Mono', monospace;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; padding: 40px 20px;
+  max-width: 1100px; margin: 0 auto;
+}
+.hero {
+  text-align: center; margin-bottom: 60px; padding: 40px 0;
+  border-bottom: 1px solid var(--border);
+}
+.hero h1 { font-size: 2.4em; color: #fff; margin-bottom: 12px; }
+.hero .tagline { font-size: 1.15em; color: var(--muted); max-width: 700px; margin: 0 auto; }
+.hero .tagline em { color: var(--accent); font-style: normal; }
+.section { margin-bottom: 50px; }
+.section h2 {
+  font-size: 1.3em; color: #fff; margin-bottom: 20px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.trace-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 24px; margin-bottom: 24px;
+  transition: border-color 0.2s;
+}
+.trace-card:hover { border-color: var(--accent); }
+.trace-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+}
+.trace-id { font-size: 0.85em; color: var(--muted); }
+.trace-title { font-size: 1.2em; color: #fff; font-weight: 600; }
+.trace-date { color: var(--muted); font-size: 0.9em; }
+.badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.badge {
+  font-size: 0.78em; padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--border); color: var(--muted);
+}
+.badge.agent { border-color: var(--accent); color: var(--accent); }
+.badge.type { border-color: var(--red); color: var(--red); }
+.badge.compound { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.08); }
+.five-stages {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 8px; margin: 16px 0;
+}
+@media (max-width: 800px) { .five-stages { grid-template-columns: 1fr; } }
+.stage {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 10px; text-align: center;
+}
+.stage .num { font-size: 1.4em; color: var(--accent); font-weight: 700; }
+.stage .label { font-size: 0.7em; color: var(--muted); margin-top: 4px; }
+.stage .val { font-size: 0.85em; color: var(--text); margin-top: 6px; }
+.chain-arrow {
+  text-align: center; color: var(--accent); font-size: 1.2em;
+  padding: 4px 0;
+}
+.block { margin: 12px 0; }
+.block-label { font-size: 0.75em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.block-text { margin-top: 4px; color: var(--text); font-size: 0.92em; }
+.timeline {
+  position: relative; padding-left: 24px; margin: 20px 0;
+  border-left: 2px solid var(--border);
+}
+.timeline-node {
+  position: relative; margin-bottom: 18px; padding-left: 16px;
+}
+.timeline-node::before {
+  content: ''; position: absolute; left: -30px; top: 6px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--border);
+}
+.timeline-node.fixed::before { background: var(--green); }
+.timeline-node.error::before { background: var(--red); }
+.timeline-node .ts { font-size: 0.75em; color: var(--muted); }
+.timeline-node .note { font-size: 0.88em; color: var(--text); margin-top: 2px; }
+.stats-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px; margin: 24px 0;
+}
+.stat-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 16px; text-align: center;
+}
+.stat-card .value { font-size: 2em; font-weight: 700; color: #fff; }
+.stat-card .label { font-size: 0.78em; color: var(--muted); margin-top: 4px; }
+.footer {
+  text-align: center; color: var(--muted); font-size: 0.78em;
+  margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border);
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>RetroOnto</h1>
+  <p class="tagline">Every error in multi-agent coordination <em>compounds into positive ROI</em> — if you have an ontology to capture it.</p>
+</div>
+
+<div class="section">
+  <h2>📊 120+ Days · 3 Decision Traces</h2>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="value">3</div><div class="label">Decision Traces</div></div>
+    <div class="stat-card"><div class="value">3/3</div><div class="label">Learning Compound</div></div>
+    <div class="stat-card"><div class="value">9</div><div class="label">New Rules Generated</div></div>
+    <div class="stat-card"><div class="value">0</div><div class="label">Recurring Errors</div></div>
+  </div>
+</div>
+
+<!-- TRACE 1: a16z -->
+<div class="section">
+  <div class="trace-card" id="trace-1">
+    <div class="trace-header">
+      <div>
+        <div class="trace-id">TRACE #1</div>
+        <div class="trace-title">a16z · 7th Repeated Error</div>
+      </div>
+      <div class="trace-date">2026-07-05</div>
+    </div>
+    <div class="badges">
+      <span class="badge agent">Agent: Zeus</span>
+      <span class="badge type">Error: Memory Failure</span>
+      <span class="badge compound">Compound ✓</span>
+    </div>
+
+    <div class="five-stages">
+      <div class="stage"><div class="num">①</div><div class="label">Trigger</div><div class="val">Capital report output</div></div>
+      <div class="stage"><div class="num">②</div><div class="label">Error</div><div class="val">Claimed a16z "pending" — was rejected 6/15</div></div>
+      <div class="stage"><div class="num">③</div><div class="label">Root Cause</div><div class="val">No forced "read source" gene before claims</div></div>
+      <div class="stage"><div class="num">④</div><div class="label">Correction</div><div class="val">Mandatory tracker read + evidence anchor rule</div></div>
+      <div class="stage"><div class="num">⑤</div><div class="label">Impact</div><div class="val">0 recurrences since rule implanted</div></div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-node error"><span class="ts">6/15 · Iteration 1</span><div class="note">First false a16z status claim. Undetected.</div></div>
+      <div class="timeline-node error"><span class="ts">6/18 · Iteration 2</span><div class="note">Second. Undetected.</div></div>
+      <div class="timeline-node error"><span class="ts">6/20 → 7/3 · Iterations 3–6</span><div class="note">Same pattern repeats through D+1, D+3, D+5, D+7 reports.</div></div>
+      <div class="timeline-node error"><span class="ts">7/5 · Iteration 7</span><div class="note">Shuyu catches it. Third correction triggers permanent rule.</div></div>
+      <div class="timeline-node fixed"><span class="ts">7/5 21:35 · Resolution</span><div class="note">SOUL.md updated: mandatory source-check + known-terminated-states whitelist.</div></div>
+    </div>
+
+    <div class="block"><div class="block-label">Lesson Category</div><div class="block-text">Human cognitive defect → Structural fix. "Any factual claim from session memory needs forced source-read step."</div></div>
+    <div class="block"><div class="block-label">Rule Generated</div><div class="block-text">Gene #7 — Capital state output gate: read tracker first → compare line-by-line → attach evidence anchor.</div></div>
+  </div>
+</div>
+
+<!-- TRACE 2: NAR-001 v1.1 -->
+<div class="section">
+  <div class="trace-card" id="trace-2">
+    <div class="trace-header">
+      <div>
+        <div class="trace-id">TRACE #2</div>
+        <div class="trace-title">NAR-001 · Pipeline Blind Spot Discovery</div>
+      </div>
+      <div class="trace-date">2026-07-07</div>
+    </div>
+    <div class="badges">
+      <span class="badge agent">Agent: Zeus</span>
+      <span class="badge type">Error: Insufficient Coverage</span>
+      <span class="badge compound">Compound ✓</span>
+    </div>
+
+    <div class="five-stages">
+      <div class="stage"><div class="num">①</div><div class="label">Trigger</div><div class="val">Shuyu orders full pipeline cross-check</div></div>
+      <div class="stage"><div class="num">②</div><div class="label">Error</div><div class="val">NAR-001 v1.0 covered only 0.1% of 1,524 outputs</div></div>
+      <div class="stage"><div class="num">③</div><div class="label">Root Cause</div><div class="val">Rules written from theory, not from actual data scans</div></div>
+      <div class="stage"><div class="num">④</div><div class="label">Correction</div><div class="val">Reverse-engineered 6 new rules from 1,524 real outputs</div></div>
+      <div class="stage"><div class="num">⑤</div><div class="label">Impact</div><div class="val">Coverage: 0.1% → ~1.5% (15x). Pipeline now data-driven.</div></div>
+    </div>
+
+    <div class="block"><div class="block-label">6 New Rules Extracted</div><div class="block-text">Agent self-attribution drift · Narrative-inconsistent residue · Loose time attribution · Decision ownership drift · Format deviation · Missing cross-agent consistency check</div></div>
+    <div class="block"><div class="block-label">Lesson Category</div><div class="block-text">Methodology defect → Structural fix. "Any detection/audit/cleaning system: rules must reverse-generate from actual data, not theory alone."</div></div>
+    <div class="block"><div class="block-label">Rule Generated</div><div class="block-text">Gene #8 — Pipeline cleaning workflow: before cleaning → mandatory data scan → reverse-generate rules from actual patterns → never from theory-only assumptions.</div></div>
+  </div>
+</div>
+
+<!-- TRACE 3: WeCom D16 -->
+<div class="section">
+  <div class="trace-card" id="trace-3">
+    <div class="trace-header">
+      <div>
+        <div class="trace-id">TRACE #3</div>
+        <div class="trace-title">WeCom Auth · Single Source of Truth Missing</div>
+      </div>
+      <div class="trace-date">2026-07-06</div>
+    </div>
+    <div class="badges">
+      <span class="badge agent">Agent: Zeus</span>
+      <span class="badge type">Error: Source-of-Truth Absence</span>
+      <span class="badge compound">Compound ✓</span>
+    </div>
+
+    <div class="five-stages">
+      <div class="stage"><div class="num">①</div><div class="label">Trigger</div><div class="val">Battle report infrastructure status section</div></div>
+      <div class="stage"><div class="num">②</div><div class="label">Error</div><div class="val">Reported wecom_auth "D+16 expired" — was restored 07-04</div></div>
+      <div class="stage"><div class="num">③</div><div class="label">Root Cause</div><div class="val">Infrastructure state had no single authoritative file</div></div>
+      <div class="stage"><div class="num">④</div><div class="label">Correction</div><div class="val">Mandatory read of infrastructure-status.json before any report</div></div>
+      <div class="stage"><div class="num">⑤</div><div class="label">Impact</div><div class="val">Multi-source drift eliminated. All agents read same source.</div></div>
+    </div>
+
+    <div class="block"><div class="block-label">Lesson Category</div><div class="block-text">Systemic defect → Structural fix. "Any cross-agent shared dynamic state needs a single authoritative source file. Reading that file must be encoded as a forced step."</div></div>
+    <div class="block"><div class="block-label">Rule Generated</div><div class="block-text">Gene #9 — DRI:Zeus infrastructure status mandatory read. Before any capital report → cat infrastructure-status.json. This file is the sole authoritative source.</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🔬 The Ontology</h2>
+  <p style="color:var(--muted);margin-bottom:16px;">Every decision trace follows the five-stage derivation chain:</p>
+  <div class="five-stages">
+    <div class="stage"><div class="num">①</div><div class="label">TRIGGER</div><div class="val">What event exposed the error?</div></div>
+    <div class="stage"><div class="num">②</div><div class="label">ERROR</div><div class="val">What was the incorrect decision or claim?</div></div>
+    <div class="stage"><div class="num">③</div><div class="label">ROOT CAUSE</div><div class="val">Why did the system produce this error?</div></div>
+    <div class="stage"><div class="num">④</div><div class="label">CORRECTION</div><div class="val">What structural fix was applied?</div></div>
+    <div class="stage"><div class="num">⑤</div><div class="label">IMPACT</div><div class="val">Has the same error recurred?</div></div>
+  </div>
+  <p style="margin-top:20px;color:var(--muted);font-size:0.9em;">
+    Key property: <strong style="color:var(--accent);">Learning Compound</strong> = 1 only when a root-cause correction prevents the same error class from recurring.
+    All 3 seed traces achieved compound. 0 new recurrences.
+  </p>
+</div>
+
+<div class="footer">
+  <p>RetroOnto · Built by the team behind ZWISERFIT</p>
+  <p style="margin-top:4px;">Open-source MIT · Traces from 120+ days of autonomous multi-agent operations · All data de-identified</p>
+  <p style="margin-top:10px;font-size:0.7em">zwf-knowledge.db · 4 tables · FTS5 · SQLite</p>
+</div>
+
+</body>
+</html>

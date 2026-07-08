@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  retroonto:
+    build: .
+    image: retroonto:latest
+    container_name: retroonto
+    stdin_open: true
+    tty: true
+    volumes:
+      # Mount a local directory to persist the SQLite database between runs
+      # The database file lives at /retroonto/data/zwf-knowledge.db inside the container
+      - retroonto-data:/retroonto/data
+    command: stats
+
+volumes:
+  retroonto-data:

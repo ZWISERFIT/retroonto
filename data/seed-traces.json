@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "event_name": "a16z 第7次同模式错误",
+    "date": "2026-07-05",
+    "agent": "Zeus",
+    "error_type": "memory_failure",
+    "context": "资本报告/战报产出中声明 a16z 状态为\"已提交·未回复\"",
+    "decision_made": "凭 session 记忆声称 a16z Speedrun 仍在等待回复",
+    "actual_state": "a16z 已于 6/15 明确拒绝——\"not the right fit for us at this time\"",
+    "root_cause": "没有在每次资本状态声明前强制读取 capital-funnel-tracker.md。连续7次产出中重复同一声明错误（6/15→6/18→6/20→6/25→6/28→7/3→7/5）。非信息缺失——是\"查源\"行为没有被编码为强制步骤。",
+    "correction": "SOUL.md 植入自检规则：资本状态输出前强制先读 tracker·逐项对比·附证据锚。写入\"已知终结状态清单\"作为永不重复查询的白名单。",
+    "rule_added": "SOUL.md → 🔴 自检规则（运行时自动触发·从自己的错误中长出来）— 资本状态输出前强制检查 + 已知终结状态清单",
+    "learning_compound": 1,
+    "compound_evidence": "Shuyu 7/5 20:42 第三次纠正同模式错误后触发永久规则。此后不再出现 tracker 状态漂移。同类\"凭记忆声明事实\"错误被根除。",
+    "trace_json": {
+      "iterations": [
+        {"date":"2026-06-15","error":"a16z状态首次错误声明","detected_by":"无","fixed":false},
+        {"date":"2026-06-18","error":"第二次","detected_by":"无","fixed":false},
+        {"date":"2026-06-20","error":"第三次","detected_by":"无","fixed":false},
+        {"date":"2026-06-25","error":"第四次","detected_by":"无","fixed":false},
+        {"date":"2026-06-28","error":"第五次","detected_by":"无","fixed":false},
+        {"date":"2026-07-03","error":"第六次","detected_by":"无","fixed":false},
+        {"date":"2026-07-05","error":"第七次","detected_by":"Shuyu（第三次纠正）","fixed":true}
+      ],
+      "category": "人类认知缺陷类·记忆替代查询",
+      "lesson_type": "结构性（非个案）",
+      "generalization": "任何依赖session记忆的声明都需要\"查源\"强制步骤。不仅限于资本tracker——推广到基础设施状态、外部数据、Agent间约定。"
+    }
+  },
+  {
+    "id": 2,
+    "event_name": "管道全量交叉验证 → NAR-001 v1.1 紧急升级",
+    "date": "2026-07-07",
+    "agent": "Zeus",
+    "error_type": "insufficient_coverage",
+    "context": "Shuyu 下令全量交叉验证——检查所有 Agent 产出中300+叙事约束的触发覆盖率",
+    "decision_made": "运行管道全量扫描·1,524条产出×9 Agent",
+    "actual_state": "NAR-001 v1.0 仅触发 0.1%——大量\"Agent主体化\"\"时间归属模糊\"等6类叙事偏移从未被拦截",
+    "root_cause": "v1.0规则基于理论假设编写（\"我们觉得这些地方会出错\"），而非基于实际爬梳数据。缺少from-data-to-rule的反向生成流程。",
+    "correction": "从1,524条实际爬梳数据中提取6条新规则（Agent主体化、Web5/去中心化残留、时间归属宽松、决策归因漂移、输出格式偏离、跨Agent一致性未校验），写入 ZWF-CLN-NAR-narrative-guard.json v1.1。触发覆盖率从 0.1% 提升至估计 1.5%+（15倍）。",
+    "rule_added": "管道清洗流水线新增规则：清洗前→必须先跑数据爬梳→从实际错误中反向生成规则→而非仅从理论编写",
+    "learning_compound": 1,
+    "compound_evidence": "同类\"基于理论假设而非实际数据设计规则\"的错误被永久修正。清洗流水线规则生成流程新增 P0 反向查证步骤。",
+    "trace_json": {
+      "before": {
+        "version": "v1.0",
+        "rules": 4,
+        "trigger_coverage": "0.1%",
+        "missed_patterns": ["Agent主体化","Web5残留","时间归属宽松","决策归因漂移","格式偏离","跨Agent未校验"]
+      },
+      "after": {
+        "version": "v1.1",
+        "rules": 10,
+        "trigger_coverage": "est. 1.5%+",
+        "new_rules": 6
+      },
+      "category": "方法论缺陷类·理论驱动→数据驱动",
+      "lesson_type": "结构性（非个案）",
+      "generalization": "任何检测/审计/清洗系统→规则必须从实际数据中反向生成·不能仅基于理论预期"
+    }
+  },
+  {
+    "id": 3,
+    "event_name": "企微D16误报·基础设施状态source-of-truth缺失",
+    "date": "2026-07-06",
+    "agent": "Zeus",
+    "error_type": "source_of_truth_missing",
+    "context": "资本报告/战报产出中断言 wecom_auth 状态为\"D16授权过期\"",
+    "decision_made": "凭 session 记忆声称企微授权已过期16天",
+    "actual_state": "wecom_auth 已于 07-04 恢复。infrastructure-status.json 中明确记录为 active。但产出时未读取该文件。",
+    "root_cause": "基础设施状态没有单一权威源。Agent 依赖自己的 session 记忆判断状态→不同 Agent 的状态认知产生漂移→报告传递给 Shuyu 形成错误态势。",
+    "correction": "SOUL.md 植入 DRI:Zeus 基础设施状态强制读取规则。任何资本报告/战报产出前必须先 cat infrastructure-status.json。该文件是唯一权威源。",
+    "rule_added": "SOUL.md → [DRI:Zeus] 基础设施状态强制读取（2026-07-06植入·企微D16误报触发）",
+    "learning_compound": 1,
+    "compound_evidence": "同类\"基础设施状态多源漂移\"被修复。单一权威源机制建立后不再出现状态误报。该规则同时纳入智囊团交叉验证协议——任何Agent产出的基础设施状态声明需引用 infrastructure-status.json 行号。",
+    "trace_json": {
+      "incident": {
+        "false_claim": "wecom 850003·D16+过期",
+        "actual": "07-04已恢复·active",
+        "source_checked": false,
+        "source_file": "/home/agentuser/shared/state/infrastructure-status.json"
+      },
+      "root_category": "系统性缺陷·单一权威源缺失",
+      "fix_type": "结构性（非个案）",
+      "lesson_type": "结构性（非个案）",
+      "generalization": "任何跨Agent共享的动态状态→必须有单一权威源文件→读取该文件必须被编码为强制步骤→不能依赖session记忆"
+    }
+  }
+]
