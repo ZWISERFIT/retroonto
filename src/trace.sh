@@ -267,6 +267,15 @@ main() {
     # 广播
     broadcast "$id" "$title" "🟢"
 
+    # 事件驱动进化：trace后立即触发约束生成+写回（异步·不等cron）
+    local retroonto_base
+    retroonto_base="$(dirname "$(dirname "$ARCHIVE_BASE")")"
+    local evolve_script="${retroonto_base}/scripts/retroonto-evolve.sh"
+    if [ -x "$evolve_script" ]; then
+        log "🔄 触发自动进化: ${id}"
+        bash "$evolve_script" --immediate 2>/dev/null &
+    fi
+
     echo "$filepath"
 }
 
