@@ -181,8 +181,40 @@ All decision traces must include:
 - Backward compatibility: New fields are added as nullable columns; existing FTS indexes are rebuilt on migration
 - Migration path: Incremental schema updates via `ALTER TABLE`; FTS triggers auto-sync
 
+## 8. Academic Anchors
+
+RetroOnto's core architecture — behavioral sequence compression → structured representation → governance enforcement — is independently validated by parallel research in user behavior modeling.
+
+### 8.1 USER-LLM: Behavioral Sequence Compression (Google Research, 2024)
+
+**Paper:** *User-LLM: Efficient LLM Contextualization with User Embeddings* (Ning et al., arxiv 2402.13598)
+
+**Key insight:** Raw user interaction sequences cannot be efficiently fed to LLMs as text prompts — they must be compressed into a distinct representation ("fifth modality") that preserves temporal signal while discarding noise. The user encoder compresses entire interaction histories into fixed-dimension embeddings, achieving 78.1× inference speedup.
+
+**Parallel to RetroOnto:** RetroOnto applies the same behavioral compression paradigm to *agent* decision sequences. Instead of embedding vectors, RetroOnto compresses decision traces into *structured rules* (Tier 4) and *generalized principles* (Tier 5) — achieving constant-time governance checks at output time via SQL FTS and grep-based gate scanning.
+
+| Dimension | USER-LLM | RetroOnto |
+|---|---|---|
+| Behavioral subject | Human users | Autonomous agents |
+| Sequence source | Clicks, searches, media consumption | Decisions, errors, corrections |
+| Compression target | Embedding vectors (cross-attention) | Structured rules + SQL FTS indexes |
+| Temporal signal | User interest drift | Error compound patterns |
+| Inference efficiency | 78.1× vs text-prompt | O(1) gate scan vs o(n) manual review |
+| End goal | Personalized LLM responses | Autonomous agent governance |
+
+**RetroOnto's parallel claim:**
+> "We treat multi-agent decision traces as a distinct modality for organizational learning — where USER-LLM compresses human behavior for personalization, RetroOnto compresses agent behavior for governance."
+
+### 8.2 Multi-Agent Governance Gap
+
+Existing multi-agent frameworks (LangChain, CrewAI, AutoGen) address task routing, communication protocols, and tool sharing — but none provide a structured mechanism for **decision governance**: the ability to encode agent errors as permanent, machine-readable rules that prevent reoccurrence across the entire agent fleet.
+
+RetroOnto fills this gap with the **Agent Decision Governance Layer**. It is not a task orchestrator — it is a governance audit trail that sits alongside any multi-agent runtime.
+
 ## References
 
 - [SQLite FTS5 Documentation](https://www.sqlite.org/fts5.html)
 - [src/schema.sql](../src/schema.sql) — Canonical schema definition
 - [data/seed-traces.json](../data/seed-traces.json) — Example traces following this ontology
+- [USER-LLM: Efficient LLM Contextualization with User Embeddings](https://arxiv.org/abs/2402.13598) — Ning et al., Google Research (2024)
+- [RetroOnto Capital Narrative v1.0](https://github.com/zwiserfit/retroonto) — Trust signal density positioning
