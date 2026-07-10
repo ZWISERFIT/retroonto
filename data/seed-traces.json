@@ -1,0 +1,40 @@
+{
+  "traces": [
+    {
+      "event_name": "portproxy-false-fix",
+      "id": "ERR-002",
+      "timestamp": "2026-07-10T06:27:38Z",
+      "error_type": "deployment-without-validation",
+      "severity": "🔴",
+      "detected_by": "founder",
+      "agent": "Tristan",
+      "root_cause": "三重失效链：①临时规则创建后未附带清理计划 ②保护脚本proxy-protect.ps1正则bug（`^\\s+0\\.0\\.0\\.0\\s+7890`→netsh输出无前导空白）导致清理逻辑从未执行 ③创始人反馈'问题还在'但未升级为P0-pending",
+      "impact": "创始人Windows电脑断网2天（全网除Tailscale直连服务外不可访问）",
+      "fix_actions": [
+        "创始人手动关闭系统代理（国内访问恢复）",
+        "netsh interface portproxy delete v4tov4 listenport=7890 listenaddress=0.0.0.0（根治）",
+        "修正proxy-protect.ps1正则并重新部署"
+      ],
+      "rules_added": [
+        "铁律3：Windows代理修复必须先删除portproxy冲突规则",
+        "铁律3.1：网络操作后必须执行read-back验证（show/check/list）",
+        "铁律3.2：保护脚本必须通过干跑测试（用真实输出验证检测逻辑）",
+        "铁律3.3：创始人'问题还在'反馈自动升级为P0-pending状态"
+      ],
+      "patterns": ["C-PORTPROXY-ZOMBIE-CLEANING", "C004-READBACK-VALIDATION"],
+      "lessons": [
+        "netsh interface portproxy规则是内核持久的一一创建进程退出后规则仍存活",
+        "安全脚本的检测逻辑必须用真实输出干跑验证，语法检查不够",
+        "'已完成'的唯一定义：端口真实可连、数据真实可查、服务真实在运行",
+        "同一故障模式复发→架构根因（protocol vs implementation），不仅是运维问题"
+      ]
+    }
+  ],
+  "metadata": {
+    "schema_version": "1.0",
+    "generated_at": "2026-07-10T06:27:38Z",
+    "generated_by": "Tristan",
+    "source": "portproxy-false-fix复盘",
+    "total_traces": 1
+  }
+}

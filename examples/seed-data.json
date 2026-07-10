@@ -1,0 +1,46 @@
+[
+  {
+    "id": "ERR-INFRA-001",
+    "category": "infrastructure",
+    "severity": "🔴",
+    "description": "Port forwarding rule caused proxy loop — all outbound connections blocked",
+    "root_cause": "netsh portproxy rule created during troubleshooting, never cleaned up. Kernel-level forwarding consumed all port 7890 connections while proxy app received none.",
+    "resolution": "Deleted stale portproxy rule + deployed automated cleanup cron",
+    "encoded_rule": "Any portproxy operation MUST include cleanup logic. Automated guard scans every 5 minutes.",
+    "source_agent": "infrastructure-agent",
+    "created": "2026-07-09"
+  },
+  {
+    "id": "ERR-COORD-001",
+    "category": "coordination",
+    "severity": "🟡",
+    "description": "Agent delivered broken URL to supervisor — link 404'd on delivery",
+    "root_cause": "URL was constructed from stale memory, not verified against live source before delivery",
+    "resolution": "Added URL format validation gate + cross-reference check",
+    "encoded_rule": "Any URL in agent output MUST be validated before delivery (format check + reachable check)",
+    "source_agent": "supervisor-agent",
+    "created": "2026-07-08"
+  },
+  {
+    "id": "ERR-INFRA-002",
+    "category": "infrastructure",
+    "severity": "🔴",
+    "description": "Syncthing process zombie — systemd restart loop exhausted all retries, service dead",
+    "root_cause": "Forked child process held lock/kernel ports after parent SIGTERM. systemd KillMode=control-group only killed parent.",
+    "resolution": "Changed to KillMode=mixed + ExecStopPost cleanup. Service auto-recovers without human intervention.",
+    "encoded_rule": "Systemd services for stateful agent processes MUST use KillMode=mixed + explicit cleanup",
+    "source_agent": "infrastructure-agent",
+    "created": "2026-07-05"
+  },
+  {
+    "id": "SUC-SELFHEAL-001",
+    "category": "infrastructure",
+    "severity": "🟢",
+    "description": "Complete self-heal chain: Watchdog detected failure → auto-diagnosis → remediation → verification → constraint generation",
+    "root_cause": "N/A — success pattern",
+    "resolution": "Three-tier autonomous recovery: Watchdog detection → L1 auto-fix → L2 escalation → L3 founder alert",
+    "encoded_rule": "Every infrastructure component MUST have a self-heal chain with defined escalation path",
+    "source_agent": "infrastructure-agent",
+    "created": "2026-07-05"
+  }
+]

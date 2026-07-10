@@ -1,0 +1,56 @@
+{
+  "gate_id": "C004",
+  "gate_name": "READBACK-VALIDATION",
+  "severity": "🔴",
+  "gate_type": "pre-flight",
+  "description": "网络/防火墙/代理操作声明「已完成」前的自动read-back验证",
+  "trigger_conditions": {
+    "mode": "any",
+    "patterns": [
+      {"field": "agent_declaration", "match": "(已修复|已部署|已删除|已配置|fixed|deployed|removed|configured)"},
+      {"field": "agent_declaration", "match": "(netsh|portproxy|firewall|iptables|代理|proxy|tunnel|隧道|转发|forward|路由|route)"}
+    ]
+  },
+  "gate_actions": {
+    "pre_check": {
+      "type": "readback_verify",
+      "windows_commands": [
+        "netsh interface portproxy show v4tov4",
+        "netsh advfirewall show currentprofile",
+        "netsh interface show interface"
+      ],
+      "linux_commands": [
+        "iptables -L -n",
+        "ss -tlnp",
+        "ip route show"
+      ],
+      "timeout_seconds": 15,
+      "on_pass": {
+        "action": "allow_completion",
+        "logging": "✅ C004 Gate: read-back验证通过",
+        "annotation": "已验证：{{verification_target}} 状态符合预期"
+      },
+      "on_fail": {
+        "action": "reject_completion",
+        "severity": "🟡",
+        "logging": "🔴 C004 Gate: read-back验证失败",
+        "agent_action": "退回Agent重新执行修复操作",
+        "retry_limit": 2,
+        "on_retry_exhausted": {
+          "action": "escalate_stella",
+          "severity": "🟠",
+          "description": "连续2次read-back失败→升级Stella协同"
+        }
+      }
+    }
+  },
+  "integration": {
+    "ferrum": "integrated",
+    "preflight": "integrated",
+    "agent_bus_event": "publish on violation"
+  },
+  "sources": ["ERR-002 portproxy-false-fix"],
+  "generated_at": "2026-07-10T06:30:00Z",
+  "generated_by": "Tristan",
+  "version": "v0.1"
+}

@@ -1,0 +1,13 @@
+# Runtime state
+retroonto.db
+logs/
+*.log
+.evolve-state.json
+.pattern-registry.json
+.writeback-registry.json
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
