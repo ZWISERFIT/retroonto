@@ -124,6 +124,17 @@ Where these papers describe the theory, RetroOnto provides a production implemen
 
 MIT
 
+## The 120-Day Proof
+
+RetroOnto isn't theoretical. It ships with **11 production constraints** derived from a 120-day autonomous 9-Agent deployment at [ZWISERFIT](https://github.com/ZWISERFIT) — an AI operating system for physical businesses.
+
+Every constraint in this repo prevented a real compound failure. The system is MIT-licensed. The 120-day decision log is not (it's our proprietary training data).
+
+- **ZWISERFIT Agents:** 9 autonomous AI agents operating 24/7 since March 2026
+- **D-Day (July 11, 2026):** Simultaneous 6-platform launch
+- **Dev.to:** [14 articles on multi-agent governance](https://dev.to/zwiserfit)
+- **Discussions:** [Community Q&A](https://github.com/ZWISERFIT/zwiserfit-ai-store-manager/discussions)
+
 ## Related
 
 - [USER-LLM: Large Language Models as User Agents](https://arxiv.org/abs/2402.13598)
